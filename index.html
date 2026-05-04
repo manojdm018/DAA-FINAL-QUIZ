@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithms & Data Structures Quiz (60 Questions)</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWix+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkR4j8r+iS9V+7l7hR3x5x1jR8xZ8+7D6b3Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --secondary: #10B981;
+      --danger: #EF4444;
+      --bg1: #eef2ff;
+      --bg2: #e0f2fe;
+      --text: #0f172a;
+      --muted: #475569;
+      --card: #ffffff;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--text);
+      background: linear-gradient(145deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(980px, 92vw);
+      margin: 2rem auto 4rem;
+    }
+
+    .hero {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+    }
+
+    h1 { margin: 0 0 .5rem; font-size: clamp(1.2rem, 3vw, 1.8rem); color: var(--primary); }
+    .sub { margin: 0; color: var(--muted); }
+
+    .progress-wrap { margin-top: .9rem; }
+    .progress-label { display: flex; justify-content: space-between; font-size: .95rem; color: var(--muted); margin-bottom: .4rem; }
+    .bar { height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+    .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width .25s ease; }
+
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 6px 20px rgba(15,23,42,0.06);
+    }
+
+    .q-title { margin: 0 0 .85rem; font-size: 1rem; line-height: 1.4; }
+    .q-number { color: var(--primary); font-weight: 700; margin-right: .35rem; }
+
+    .options { display: grid; gap: .55rem; }
+    .option {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .7rem .8rem;
+      cursor: pointer;
+      transition: .2s;
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+    }
+    .option:hover { border-color: var(--primary); background: #f8faff; }
+    .option input { accent-color: var(--primary); }
+    .option.selected { border-color: var(--primary); background: #eef2ff; }
+    .option.correct { border-color: var(--secondary); background: #ecfdf5; }
+    .option.incorrect { border-color: var(--danger); background: #fef2f2; }
+
+    .actions {
+      display: flex;
+      gap: .8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.2rem;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: .8rem 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      transition: transform .15s ease, opacity .2s;
+    }
+    button:hover { transform: translateY(-1px); opacity: .94; }
+    .btn-submit { background: var(--primary); }
+    .btn-reset { background: #334155; }
+
+    .result {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--primary);
+      min-height: 1.5rem;
+    }
+
+    .legend { margin-top: .6rem; text-align: center; color: var(--muted); font-size: .92rem; }
+    .legend i { margin-right: .25rem; }
+
+    @media (max-width: 640px) {
+      .container { width: 95vw; }
+      .hero { position: static; }
+    }
+
+    @media print {
+      body { background: white; }
+      .hero { position: static; box-shadow: none; backdrop-filter: none; }
+      .actions { display: none; }
+      .question-card { box-shadow: none; break-inside: avoid; }
+      .option { border-color: #ccc; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1><i class="fa-solid fa-brain"></i> Algorithms & Data Structures Quiz</h1>
+      <p class="sub">60 MCQs • Choose one option per question • Submit to see score and review.</p>
+      <div class="progress-wrap">
+        <div class="progress-label"><span id="progressText">Answered 0 / 60</span><span id="progressPercent">0%</span></div>
+        <div class="bar"><div id="progressBar"></div></div>
+      </div>
+      <div id="result" class="result"></div>
+      <div class="legend"><i class="fa-solid fa-circle-check" style="color:#10B981"></i>Correct  <i class="fa-solid fa-circle-xmark" style="color:#EF4444"></i>Incorrect</div>
+    </section>
+
+    <form id="quizForm"></form>
+
+    <div class="actions">
+      <button class="btn-submit" id="submitBtn" type="button"><i class="fa-solid fa-paper-plane"></i> Submit Quiz</button>
+      <button class="btn-reset" id="resetBtn" type="button"><i class="fa-solid fa-rotate-left"></i> Reset Quiz</button>
+    </div>
+  </main>
+
+  <script>
+    const quizData = [
+      ["Which notation provides an asymptotic upper bound on the running time of an algorithm?", ["Big-O notation", "Big-Ω notation", "Big-Θ notation", "Little-o notation"], 0],
+      ["What is the time complexity of Bubble Sort in the worst case?", ["O(n)", "O(n log n)", "O(n²)", "O(log n)"], 2],
+      ["Selection sort works by repeatedly finding the ______ element from the unsorted part.", ["largest", "minimum", "middle", "random"], 1],
+      ["In the analysis framework, the efficiency of an algorithm is usually measured as a function of:", ["processor speed", "input size", "memory brand", "programming language"], 1],
+      ["The 'Brute Force' approach to string matching compares the pattern to:", ["a precomputed hash", "a suffix tree", "every possible text alignment", "only boundary characters"], 2],
+      ["Which class represents algorithms with the slowest growth rate?", ["Exponential", "Linear", "Logarithmic", "Quadratic"], 2],
+      ["The 'Exhaustive Search' technique is typically used for which type of problems?", ["Optimization/combinatorial problems", "Only sorting", "Only searching sorted arrays", "Only graph traversal"], 0],
+      ["What is the basic operation in Sequential Search?", ["Swapping elements", "Comparing key with current element", "Partitioning", "Merging"], 1],
+      ["A recursive algorithm's efficiency is typically analyzed using:", ["Transition diagrams", "Recurrence relations", "Hash tables", "Load factors"], 1],
+      ["Which of the following is NOT a brute force algorithm?", ["Selection Sort", "Bubble Sort", "Quick Sort", "Sequential Search"], 2],
+      ["Which sort uses the 'Decrease-by-constant' (specifically by 1) technique?", ["Insertion Sort", "Merge Sort", "Quick Sort", "Heap Sort"], 0],
+      ["Topological sorting is applicable only to which type of graphs?", ["Undirected cyclic graphs", "Directed acyclic graphs (DAGs)", "Weighted complete graphs", "Bipartite graphs"], 1],
+      ["The 'Fake Coin' problem using a balance scale is an example of:", ["Divide and Conquer", "Dynamic Programming", "Greedy Method", "Backtracking"], 0],
+      ["The Master Theorem is used to solve:", ["Linear equations", "Recurrence relations of divide-and-conquer", "Graph coloring", "NP-complete reductions"], 1],
+      ["Which algorithm is known for its 'Divide and Conquer' approach to sorting?", ["Selection Sort", "Insertion Sort", "Merge Sort", "Bubble Sort"], 2],
+      ["The pivot element is a key part of which sorting algorithm?", ["Quick Sort", "Heap Sort", "Counting Sort", "Radix Sort"], 0],
+      ["What is the best case time complexity of Binary Search?", ["O(1)", "O(log n)", "O(n)", "O(n log n)"], 0],
+      ["In binary tree traversals, 'Root-Left-Right' is known as:", ["Inorder", "Postorder", "Preorder", "Level order"], 2],
+      ["The complexity of finding the height of a Binary Search Tree (BST) is:", ["O(1)", "O(log n) always", "O(n)", "O(n²)"], 2],
+      ["Strassen's algorithm is used to improve the efficiency of:", ["String matching", "Matrix multiplication", "Shortest path", "Heap operations"], 1],
+      ["The Josephus problem is an example of:", ["Decrease-and-conquer/recurrence", "Greedy graph algorithm", "Hashing", "External sorting"], 0],
+      ["Russian Peasant Multiplication is based on which technique?", ["Divide and conquer with halving/doubling", "Dynamic programming", "Backtracking", "Branch and bound"], 0],
+      ["Which algorithm is used for the 'Selection Problem' (finding the k-th smallest element)?", ["Quickselect", "Bellman-Ford", "KMP", "Prim"], 0],
+      ["What is the time complexity of Strassen's Matrix Multiplication?", ["O(n³)", "O(n² log n)", "O(n^2.81)", "O(n log n)"], 2],
+      ["Binary Search requires the input array to be:", ["Randomized", "Sorted", "Unique", "Reversed"], 1],
+      ["Pre-sorting an array can reduce the complexity of finding unique elements to:", ["O(n²)", "O(n log n)", "O(2ⁿ)", "O(1)"], 1],
+      ["Which data structure is the foundation of Heap Sort?", ["Binary Heap", "AVL Tree", "Queue", "Hash Table"], 0],
+      ["What is the main advantage of a Red-Black Tree over a standard BST?", ["Simpler insertion", "Guaranteed near-balanced height", "Uses less memory", "No rotations needed"], 1],
+      ["In a 2-3 Tree, every internal node has:", ["1 or 2 children", "2 or 3 children", "Exactly 3 children", "At most 4 children"], 1],
+      ["Horspool's algorithm improves string matching by using:", ["Failure function table", "Shift table based on bad-character rule", "Suffix automaton", "Dynamic programming"], 1],
+      ["Prim's algorithm is used to find:", ["Single-source shortest path", "Minimum spanning tree", "Maximum flow", "Topological order"], 1],
+      ["Which greedy algorithm uses a 'Union-Find' data structure?", ["Dijkstra", "Kruskal", "Prim", "Floyd-Warshall"], 1],
+      ["Dijkstra's algorithm is used to solve which problem?", ["All-pairs shortest path", "Single-source shortest path (non-negative weights)", "Minimum cut", "Longest common subsequence"], 1],
+      ["Huffman coding is primarily used for:", ["Data compression", "Encryption", "Graph traversal", "Sorting"], 0],
+      ["The time complexity of Heap Sort in all cases is:", ["O(n²)", "O(n log n)", "O(n)", "O(log n)"], 1],
+      ["B-Trees are widely used in which area?", ["CPU scheduling", "Database and file-system indexing", "Image rendering", "Cryptography"], 1],
+      ["Boyer-Moore algorithm is a ______ matching algorithm.", ["String", "Graph", "Numerical", "Tree balancing"], 0],
+      ["The greedy choice property means:", ["A globally optimal solution can be built via locally optimal choices", "Always choose smallest input first", "Try all possibilities", "Use memoization table"], 0],
+      ["What is the characteristic of a Min-Heap?", ["Parent key ≤ children keys", "Parent key ≥ children keys", "Inorder traversal is sorted", "Leaves are sorted"], 0],
+      ["In Kruskal's algorithm, we sort the ______ in non-decreasing order.", ["Vertices", "Edges by weight", "Adjacency lists", "Connected components"], 1],
+      ["Dynamic Programming stores results of subproblems to avoid:", ["Recursion", "Repeated computation", "Memory allocation", "Input validation"], 1],
+      ["Which algorithm finds 'All-pairs shortest paths'?", ["Floyd-Warshall", "Binary Search", "Heapify", "Kruskal"], 0],
+      ["The Warshall algorithm is used to find the ______ of a graph.", ["minimum spanning tree", "transitive closure", "Euler cycle", "maximum matching"], 1],
+      ["The 'Knapsack Problem' solved by memory functions combines:", ["Greedy + sorting", "Recursion + memoization", "Brute force + BFS", "Divide + merge"], 1],
+      ["Which complexity class contains problems solvable in polynomial time?", ["NP", "PSPACE", "P", "EXP"], 2],
+      ["A problem is NP-Complete if it is in NP and:", ["Solvable by greedy method", "NP-hard", "Has no polynomial algorithm", "In P"], 1],
+      ["The N-Queens problem is typically solved using:", ["Backtracking", "Prim's algorithm", "Binary search", "KMP"], 0],
+      ["Which technique uses a 'State-Space Tree'?", ["Backtracking", "Bucket sort", "Huffman coding", "Topological sorting"], 0],
+      ["The 'Branch and Bound' technique is primarily used for:", ["Optimization problems", "String hashing", "Heap construction", "Tree traversals"], 0],
+      ["In the 'Sum of Subsets' problem, we find a subset whose sum equals:", ["Maximum element", "Given target value", "Average", "Zero always"], 1],
+      ["What is the main difference between Backtracking and Branch & Bound?", ["B&B uses bounds to prune optimization search", "Backtracking uses graphs only", "B&B never prunes", "Backtracking needs sorted input"], 0],
+      ["Which of the following is NP-Hard?", ["Traveling Salesman Problem (optimization version)", "Merge Sort", "Binary Search", "Prim's algorithm"], 0],
+      ["The 'Memory Function' approach is also known as:", ["Memoization", "Randomization", "Tabulation only", "Amortization"], 0],
+      ["Computing Binomial Coefficients using DP uses which mathematical identity?", ["C(n,k)=C(n-1,k-1)+C(n-1,k)", "a²-b²=(a-b)(a+b)", "Euler's formula", "Bayes theorem"], 0],
+      ["Which algorithm uses a distance matrix and updates it iteratively for all pairs?", ["Floyd-Warshall", "Dijkstra", "Kruskal", "DFS"], 0],
+      ["In Backtracking, 'Pruning' the tree means:", ["Removing impossible/non-promising branches", "Deleting root node", "Balancing the tree", "Sorting branches"], 0],
+      ["Decision Trees are used to prove ______ for comparison-based sorting.", ["upper bounds", "lower bounds", "average memory", "cache locality"], 1],
+      ["Graph coloring is a ______ problem.", ["P-complete", "NP-Complete", "Logarithmic-time", "Regular-language"], 1],
+      ["NP stands for:", ["Non-Polynomial", "Nondeterministic Polynomial time", "Numeric Processing", "Node Partition"], 1],
+      ["The Knapsack problem involves selecting items to maximize:", ["Total count", "Total value under capacity constraint", "Total weight", "Sorting speed"], 1]
+    ];
+
+    const correctAnswers = quizData.map(q => q[2]);
+    const form = document.getElementById('quizForm');
+    const result = document.getElementById('result');
+
+    function renderQuiz() {
+      form.innerHTML = '';
+      quizData.forEach((q, i) => {
+        const card = document.createElement('article');
+        card.className = 'question-card';
+
+        const title = document.createElement('h2');
+        title.className = 'q-title';
+        title.innerHTML = `<span class="q-number">Q${i+1}.</span> ${q[0]}`;
+        card.appendChild(title);
+
+        const options = document.createElement('div');
+        options.className = 'options';
+        q[1].forEach((opt, j) => {
+          const label = document.createElement('label');
+          label.className = 'option';
+          label.dataset.q = i;
+          label.dataset.o = j;
+          label.innerHTML = `<input type="radio" name="q${i}" value="${j}"> <strong>${String.fromCharCode(65+j)}.</strong> <span>${opt}</span>`;
+          options.appendChild(label);
+        });
+        card.appendChild(options);
+        form.appendChild(card);
+      });
+      bindOptionUI();
+      updateProgress();
+    }
+
+    function bindOptionUI() {
+      form.querySelectorAll('.option input').forEach(input => {
+        input.addEventListener('change', e => {
+          const name = e.target.name;
+          form.querySelectorAll(`input[name="${name}"]`).forEach(r => r.parentElement.classList.remove('selected'));
+          e.target.parentElement.classList.add('selected');
+          updateProgress();
+        });
+      });
+    }
+
+    function updateProgress() {
+      let answered = 0;
+      quizData.forEach((_, i) => {
+        if (form.querySelector(`input[name="q${i}"]:checked`)) answered++;
+      });
+      const pct = Math.round((answered/quizData.length)*100);
+      document.getElementById('progressText').textContent = `Answered ${answered} / ${quizData.length}`;
+      document.getElementById('progressPercent').textContent = `${pct}%`;
+      document.getElementById('progressBar').style.width = `${pct}%`;
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      quizData.forEach((q, i) => {
+        const selected = form.querySelector(`input[name="q${i}"]:checked`);
+        const labels = [...form.querySelectorAll(`label[data-q="${i}"]`)];
+        labels.forEach(l => l.classList.remove('correct', 'incorrect'));
+        labels[q[2]].classList.add('correct');
+
+        if (selected) {
+          const val = Number(selected.value);
+          if (val === q[2]) score++;
+          else labels[val].classList.add('incorrect');
+        }
+      });
+      const percent = Math.round((score / quizData.length) * 100);
+      result.innerHTML = `<i class="fa-solid fa-trophy"></i> ${score}/${quizData.length} - ${percent}%`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetQuiz() {
+      renderQuiz();
+      result.textContent = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', submitQuiz);
+    document.getElementById('resetBtn').addEventListener('click', resetQuiz);
+
+    renderQuiz();
+    window.correctAnswers = correctAnswers;
+  </script>
+</body>
+</html>
